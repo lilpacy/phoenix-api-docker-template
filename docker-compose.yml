@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  phoenix:
+    build: .
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    env_file:
+      - .dockerenv
+    command: bash -c "mix ecto.setup && mix phx.server"
+    networks:
+      app_net:
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: community_dev
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      app_net:
+
+volumes:
+  postgres:
+
+networks:
+  app_net:
