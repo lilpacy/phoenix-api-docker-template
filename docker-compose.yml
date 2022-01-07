@@ -8,7 +8,9 @@ services:
       - postgres
     env_file:
       - .dockerenv
-    command: bash -c "mix ecto.setup && mix phx.server"
+    volumes:
+      - .:/opt/app # for hot reload
+    command: bash -c "mix ecto.migrate && mix phx.server"
     networks:
       app_net:
 
@@ -16,11 +18,6 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: community_dev
     volumes:
       - postgres:/var/lib/postgresql/data
     networks:
